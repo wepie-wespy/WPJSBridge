@@ -168,14 +168,26 @@ WPJSBridgeManager.prototype.getDeviceInfo = function (options) {
   })
 }
 
-WPJSBridgeManager.prototype.hideLoadingView = function (options) {
-  console.log("hideLoadingView call")
-  this.jsBridge.callHandler("hideLoadingView", "", function (response) {
-    console.log("hideLoadingView response", response)
+WPJSBridgeManager.prototype.getWindowInfo = function (options) {
+  console.log("getWindowInfo call")
+  this.jsBridge.callHandler("getWindowInfo", "", function (response) {
+    console.log("getWindowInfo response", response)
     const json = JSON.parse(response)
     if (json.code == CODE_SUCCESS) {
       if (typeof options.success === 'function') {
-        options.success()
+        const ret = {
+          pixelRatio: json.result.pixelRatio,
+          screenWidth: json.result.screenWidth,
+          screenHeight: json.result.screenHeight,
+          windowWidth: json.result.windowWidth,
+          windowHeight: json.result.windowHeight,
+          statusBarHeight: json.result.statusBarHeight,
+          screenTop: json.result.screenTop
+        }
+        if (json.result.safeArea) {
+          ret.safeArea = json.result.safeArea
+        }
+        options.success(ret)
       }
     } else {
       if (typeof options.fail === 'function') {
@@ -211,9 +223,9 @@ wp.getDeviceInfo = function(options) {
   })
 }
 
-wp.hideLoadingView = function(options) {
+wp.getWindowInfo = function(options) {
   WPJSBridgeManager.getInstance().ensureJSBridge(() => {
-    WPJSBridgeManager.getInstance().hideLoadingView(options)
+    WPJSBridgeManager.getInstance().getWindowInfo(options)
   })
 }
 

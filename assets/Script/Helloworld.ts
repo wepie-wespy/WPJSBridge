@@ -14,16 +14,14 @@ export default class Helloworld extends cc.Component {
     start () {
         // init logic
         this.label.string = this.text;
-        setTimeout(() => {
-            wp.hideLoadingView({
-                success: () => {
-                    console.log("hideLoadingView success")
-                },
-                fail: (code, msg) => {
-                    console.log("hideLoadingView fail", code, msg)
-                }
-            })
-        }, 2000)
+        wp.getWindowInfo({
+            success: (rsp) => {
+                console.log("getWindowInfo success", rsp)
+            },
+            fail: (code, msg) => {
+                console.log("getWindowInfo fail", code, msg)
+            }
+        })
     }
 
     onCLickLogin() {
