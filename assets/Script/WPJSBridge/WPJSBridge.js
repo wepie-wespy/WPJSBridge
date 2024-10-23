@@ -197,6 +197,27 @@ WPJSBridgeManager.prototype.getWindowInfo = function (options) {
   })
 }
 
+WPJSBridgeManager.prototype.openWebPage = function (options) {
+  const paramsObj = {
+    url: options.url
+  }
+  const params = JSON.stringify(paramsObj)
+  console.log("openWebPage call")
+  this.jsBridge.callHandler("openWebPage", params, function (response) {
+    console.log("openWebPage response", response)
+    const json = JSON.parse(response)
+    if (json.code == CODE_SUCCESS) {
+      if (typeof options.success === 'function') {
+        options.success()
+      }
+    } else {
+      if (typeof options.fail === 'function') {
+        options.fail(json.code, json.msg)
+      }
+    }
+  })
+}
+
 const wp = {}
 
 wp.login = function(options) {
@@ -226,6 +247,12 @@ wp.getDeviceInfo = function(options) {
 wp.getWindowInfo = function(options) {
   WPJSBridgeManager.getInstance().ensureJSBridge(() => {
     WPJSBridgeManager.getInstance().getWindowInfo(options)
+  })
+}
+
+wp.openWebPage = function(options) {
+  WPJSBridgeManager.getInstance().ensureJSBridge(() => {
+    WPJSBridgeManager.getInstance().openWebPage(options)
   })
 }
 

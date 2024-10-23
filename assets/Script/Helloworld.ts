@@ -5,15 +5,7 @@ const {ccclass, property} = cc._decorator;
 @ccclass
 export default class Helloworld extends cc.Component {
 
-    @property(cc.Label)
-    label: cc.Label = null;
-
-    @property
-    text: string = 'hello';
-
     start () {
-        // init logic
-        this.label.string = this.text;
         wp.getWindowInfo({
             success: (rsp) => {
                 console.log("getWindowInfo success", rsp)
@@ -72,6 +64,19 @@ export default class Helloworld extends cc.Component {
             },
             fail: (code, msg) => {
                 console.log("getDeviceInfo fail", code, msg)
+            }
+        })
+    }
+
+    onCLickOpenWebPage() {
+        console.log("onCLickOpenWebPage")
+        wp.openWebPage({
+            url: "https://www.baidu.com",
+            success: (rsp) => {
+                console.log("openWebPage success")
+            },
+            fail: (code, msg) => {
+                console.log("openWebPage fail", code, msg)
             }
         })
     }
