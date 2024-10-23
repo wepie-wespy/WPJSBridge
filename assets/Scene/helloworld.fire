@@ -1739,8 +1739,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "获取设备信息",
-    "_N$string": "获取设备信息",
+    "_string": "分享",
+    "_N$string": "分享",
     "_fontSize": 20,
     "_lineHeight": 40,
     "_enableWrapText": false,
@@ -1909,7 +1909,7 @@
     },
     "component": "",
     "_componentId": "e1b90/rohdEk4SdmmEZANaD",
-    "handler": "onCLickGetDeviceInfo",
+    "handler": "onCLickShare",
     "customEventData": ""
   },
   {

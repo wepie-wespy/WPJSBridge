@@ -18,7 +18,6 @@ export default class Helloworld extends cc.Component {
 
     onCLickLogin() {
         wp.login({
-            client_id: 100001,
             success: (auth_code) => {
                 console.log("login success", auth_code)
             },
@@ -30,7 +29,6 @@ export default class Helloworld extends cc.Component {
 
     onCLickCostCoin() {
         wp.recharge({
-            client_id: 100001,
             gold_num: 100,
             goods_name: "test",
             order_id: "test1",
@@ -56,14 +54,17 @@ export default class Helloworld extends cc.Component {
         })
     }
 
-    onCLickGetDeviceInfo() {
-        console.log("onCLickGetDeviceInfo")
-        wp.getDeviceInfo({
+    onCLickShare() {
+        console.log("onCLickShare")
+        wp.share({
+            share_text: "xxxxx",
+            share_title: "xxxxx",
+            share_image_url: "xxxxx",
             success: (rsp) => {
-                console.log("getDeviceInfo success", rsp.model, rsp.system_version)
+                console.log("share success")
             },
             fail: (code, msg) => {
-                console.log("getDeviceInfo fail", code, msg)
+                console.log("share fail", code, msg)
             }
         })
     }

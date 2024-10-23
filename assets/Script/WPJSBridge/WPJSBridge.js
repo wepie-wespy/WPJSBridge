@@ -48,16 +48,8 @@ WPJSBridgeManager.prototype.ensureJSBridge = function(callback) {
 }
 
 WPJSBridgeManager.prototype.login = function (options) {
-  // 检查是否有必要的参数
-  if (!options || !options.client_id) {
-    console.error('Please provide a client_id.')
-    return
-  }
-  const params = JSON.stringify({
-    client_id: options.client_id,
-  })
-  console.log("login call", params)
-  this.jsBridge.callHandler("login", params, function (response) {
+  console.log("login call")
+  this.jsBridge.callHandler("login", "", function (response) {
     console.log("login response", response)
     const json = JSON.parse(response)
     if (json.code == CODE_SUCCESS) {
@@ -74,10 +66,6 @@ WPJSBridgeManager.prototype.login = function (options) {
 
 WPJSBridgeManager.prototype.recharge = function (options) {
   // 检查是否有必要的参数
-  if (!options || !options.client_id) {
-    console.error('Please provide a client_id.')
-    return
-  }
   if (!options || !options.gold_num) {
     console.error('Please provide a gold_num.')
     return
@@ -95,7 +83,6 @@ WPJSBridgeManager.prototype.recharge = function (options) {
     return
   }
   const paramsObj = {
-    client_id: options.client_id,
     gold_num: options.gold_num,
     goods_name: options.goods_name,
     order_id: options.order_id,
@@ -218,6 +205,29 @@ WPJSBridgeManager.prototype.openWebPage = function (options) {
   })
 }
 
+WPJSBridgeManager.prototype.share = function (options) {
+  const paramsObj = {
+    share_text: options.share_text,
+    share_title: options.share_title,
+    share_image_url: options.share_image_url
+  }
+  const params = JSON.stringify(paramsObj)
+  console.log("share call")
+  this.jsBridge.callHandler("share", params, function (response) {
+    console.log("share response", response)
+    const json = JSON.parse(response)
+    if (json.code == CODE_SUCCESS) {
+      if (typeof options.success === 'function') {
+        options.success()
+      }
+    } else {
+      if (typeof options.fail === 'function') {
+        options.fail(json.code, json.msg)
+      }
+    }
+  })
+}
+
 const wp = {}
 
 wp.login = function(options) {
@@ -253,6 +263,12 @@ wp.getWindowInfo = function(options) {
 wp.openWebPage = function(options) {
   WPJSBridgeManager.getInstance().ensureJSBridge(() => {
     WPJSBridgeManager.getInstance().openWebPage(options)
+  })
+}
+
+wp.share = function(options) {
+  WPJSBridgeManager.getInstance().ensureJSBridge(() => {
+    WPJSBridgeManager.getInstance().share(options)
   })
 }
 
