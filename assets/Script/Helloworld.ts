@@ -125,7 +125,7 @@ export default class Helloworld extends cc.Component {
         actions.push({
             title: "openWebPage",
             action: () => {
-                wp.recharge({
+                wp.openWebPage({
                     url: "https://huiwan.wepie.com/docs/LJVxMTI0",
                     success: (rsp) => {
                         this.showSuccess(JSON.stringify(rsp))
