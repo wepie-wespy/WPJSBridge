@@ -23,7 +23,7 @@ export default class Helloworld extends cc.Component {
         const buttonGap = 20
         const buttonWidth = (width - buttonGap * 3) / 2
         const buttonHeight = 60
-        const topGap = 47
+        const topGap = 88
         let actions = this.setupActions()
         const rowCount = Math.floor(actions.length / 2) + 1
         const contentHeight = topGap + rowCount * (buttonHeight + buttonGap)
@@ -156,7 +156,7 @@ export default class Helloworld extends cc.Component {
     }
 
     showSuccess(text: string) {
-        this.infoLabel.node.color = cc.Color.BLACK
+        this.infoLabel.node.color = cc.Color.WHITE
         this.infoLabel.string = "调用成功: " + text
     }
 
