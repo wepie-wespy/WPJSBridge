@@ -2,6 +2,7 @@ const CODE_SUCCESS = 200
 
 var WPJSBridgeManager = function () {
   this.jsBridge = undefined
+  this.callbacksMap = new Map()
 }
 
 WPJSBridgeManager.instance = null
@@ -228,6 +229,36 @@ WPJSBridgeManager.prototype.share = function (options) {
   })
 }
 
+WPJSBridgeManager.prototype.register = function (name, callback) {
+  if (this.callbacksMap.has(name)) {
+    const callbacks = this.callbacksMap.get(name)
+    callbacks.add(callback)
+  } else {
+    const callbacks = new Set()
+    callbacks.add(callback)
+    this.callbacksMap.set(name, callbacks)
+    this.ensureJSBridge(() => {
+      this.jsBridge.registerHandler(name, (data, responseCallback) => {
+        const callbackList = this.callbacksMap.get(name)
+        if (callbackList) {
+          const json = JSON.stringify(data)
+          console.log("native call web", json)
+          for (const callback of callbackList) {
+            callback(json)
+          }
+        }
+      })
+    })
+  }
+}
+
+WPJSBridgeManager.prototype.unRegister = function (name, callback) {
+  if (this.callbacksMap.has(name)) {
+    const callbacks = this.callbacksMap.get(name)
+    callbacks.delete(callback)
+  }
+}
+
 const wp = {}
 
 wp.login = function(options) {
@@ -270,6 +301,14 @@ wp.share = function(options) {
   WPJSBridgeManager.getInstance().ensureJSBridge(() => {
     WPJSBridgeManager.getInstance().share(options)
   })
+}
+
+wp.onWebViewStateChanged = function(callback) {
+  WPJSBridgeManager.getInstance().register("onWebViewStateChanged", callback)
+}
+
+wp.offWebViewStateChanged = function(callback) {
+  WPJSBridgeManager.getInstance().unRegister("onWebViewStateChanged", callback)
 }
 
 module.exports = wp

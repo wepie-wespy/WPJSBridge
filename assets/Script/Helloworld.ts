@@ -16,6 +16,10 @@ export default class Helloworld extends cc.Component {
     @property(cc.Prefab)
     buttonPrefab: cc.Prefab = null
 
+    onWebViewStateChangedCallback: (res: Object) => void = (res) => {
+        this.showObserve("onWebViewStateChanged", JSON.stringify(res))
+    }
+
     onLoad(): void {
         cc.debug.setDisplayStats(false)
         const width = this.node.getContentSize().width
@@ -48,6 +52,19 @@ export default class Helloworld extends cc.Component {
             btn.onClickCallback = action.action
             index++
         }
+        this.registerObservers()
+    }
+
+    protected onDestroy(): void {
+        this.unRegisterObservers()
+    }
+
+    registerObservers() {
+        wp.onWebViewStateChanged(this.onWebViewStateChangedCallback)
+    }
+
+    unRegisterObservers() {
+        wp.offWebViewStateChanged(this.onWebViewStateChangedCallback)
     }
 
     setupActions(): Action[] {
@@ -163,5 +180,10 @@ export default class Helloworld extends cc.Component {
     showFail(text: string) {
         this.infoLabel.node.color = cc.Color.RED
         this.infoLabel.string = "调用失败: " + text
+    }
+
+    showObserve(name: string, text: string) {
+        this.infoLabel.node.color = cc.Color.YELLOW
+        this.infoLabel.string = "监听到通知: " + name + " " + text
     }
 }
