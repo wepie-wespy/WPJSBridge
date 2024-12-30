@@ -229,6 +229,50 @@ WPJSBridgeManager.prototype.share = function (options) {
   })
 }
 
+WPJSBridgeManager.prototype.share = function (options) {
+  const paramsObj = {
+    share_text: options.share_text,
+    share_title: options.share_title,
+    share_image_url: options.share_image_url
+  }
+  const params = JSON.stringify(paramsObj)
+  console.log("share call")
+  this.jsBridge.callHandler("share", params, function (response) {
+    console.log("share response", response)
+    const json = JSON.parse(response)
+    if (json.code == CODE_SUCCESS) {
+      if (typeof options.success === 'function') {
+        options.success()
+      }
+    } else {
+      if (typeof options.fail === 'function') {
+        options.fail(json.code, json.msg)
+      }
+    }
+  })
+}
+
+WPJSBridgeManager.prototype.jumpDeeplink = function (options) {
+  const paramsObj = {
+    deeplink: options.deeplink
+  }
+  const params = JSON.stringify(paramsObj)
+  console.log("share jumpDeeplink")
+  this.jsBridge.callHandler("jumpDeeplink", params, function (response) {
+    console.log("jumpDeeplink response", response)
+    const json = JSON.parse(response)
+    if (json.code == CODE_SUCCESS) {
+      if (typeof options.success === 'function') {
+        options.success()
+      }
+    } else {
+      if (typeof options.fail === 'function') {
+        options.fail(json.code, json.msg)
+      }
+    }
+  })
+}
+
 WPJSBridgeManager.prototype.register = function (name, callback) {
   if (this.callbacksMap.has(name)) {
     const callbacks = this.callbacksMap.get(name)
@@ -255,7 +299,9 @@ WPJSBridgeManager.prototype.register = function (name, callback) {
 WPJSBridgeManager.prototype.unRegister = function (name, callback) {
   if (this.callbacksMap.has(name)) {
     const callbacks = this.callbacksMap.get(name)
-    callbacks.delete(callback)
+    if (callbacks) {
+      callbacks.delete(callback)
+    }
   }
 }
 
@@ -300,6 +346,12 @@ wp.openWebPage = function(options) {
 wp.share = function(options) {
   WPJSBridgeManager.getInstance().ensureJSBridge(() => {
     WPJSBridgeManager.getInstance().share(options)
+  })
+}
+
+wp.jumpDeeplink = function(options) {
+  WPJSBridgeManager.getInstance().ensureJSBridge(() => {
+    WPJSBridgeManager.getInstance().jumpDeeplink(options)
   })
 }
 

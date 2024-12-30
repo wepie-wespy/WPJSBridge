@@ -169,6 +169,20 @@ export default class Helloworld extends cc.Component {
                 })
             }
         })
+        actions.push({
+            title: "jumpDeeplink",
+            action: () => {
+                wp.jumpDeeplink({
+                    deeplink: "wespydeeplink://discover_topic?topic_id=11067",
+                    success: (rsp) => {
+                        this.showSuccess(JSON.stringify(rsp))
+                    },
+                    fail: (code, msg) => {
+                        this.showFail(`code: ${code} msg: ${msg}`)
+                    }
+                })
+            }
+        })
         return actions
     }
 
